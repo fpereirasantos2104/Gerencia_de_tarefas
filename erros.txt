@@ -1,0 +1,56 @@
+(plat) C:\Users\franc\plat\app>pytest -v
+========================================================================= test session starts =========================================================================
+platform win32 -- Python 3.10.8, pytest-8.2.2, pluggy-1.5.0 -- C:\Users\franc\plat\Scripts\python.exe
+cachedir: .pytest_cache
+rootdir: C:\Users\franc\plat\app
+plugins: anyio-3.6.2, asyncio-0.23.7
+asyncio: mode=strict
+collected 3 items
+
+test_main.py::test_create_task FAILED                                                                                                                            [ 33%]
+test_main.py::test_read_task FAILED                                                                                                                              [ 66%]
+test_main.py::test_read_task_not_found FAILED                                                                                                                    [100%]
+
+============================================================================== FAILURES ===============================================================================
+__________________________________________________________________________ test_create_task ___________________________________________________________________________
+
+db = <sqlalchemy.orm.session.Session object at 0x00000225854518A0>
+
+    def test_create_task(db):
+        response = client.post("/tasks/", json={"id": 1, "title": "Tarefa", "description": "Tarefa 1", "status": "Concluida", "createdAt": "2024-06-10T22:31:01.202Z" })
+>       assert response.status_code == 200
+E       assert 404 == 200
+E        +  where 404 = <Response [404]>.status_code
+
+test_main.py:46: AssertionError
+___________________________________________________________________________ test_read_task ____________________________________________________________________________
+
+db = <sqlalchemy.orm.session.Session object at 0x0000022585451CF0>
+
+    def test_read_task(db):
+        response = client.get("/tasks/", json={"title": "Tarefa", "description": "Tarefa 1", "status": "Concluida"})
+>       assert response.status_code == 200
+E       assert 404 == 200
+E        +  where 404 = <Response [404]>.status_code
+
+test_main.py:57: AssertionError
+______________________________________________________________________ test_read_task_not_found _______________________________________________________________________
+
+db = <sqlalchemy.orm.session.Session object at 0x00000225854BD990>
+
+    def test_read_task_not_found(db):
+        response = client.get("/tasks/0")
+        assert response.status_code == 404
+        data = response.json()
+>       assert data["detail"] == "User not found"
+E       AssertionError: assert 'Not Found' == 'User not found'
+E
+E         - User not found
+E         + Not Found
+
+test_main.py:71: AssertionError
+======================================================================= short test summary info =======================================================================
+FAILED test_main.py::test_create_task - assert 404 == 200
+FAILED test_main.py::test_read_task - assert 404 == 200
+FAILED test_main.py::test_read_task_not_found - AssertionError: assert 'Not Found' == 'User not found'
+========================================================================== 3 failed in 1.87s ==========================================================================
